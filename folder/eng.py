@@ -20,7 +20,7 @@ file_path = "eng_final.csv"
 @st.cache_data
 def load_and_preprocess_data(file_path):
     try:
-        df = pd.read_csv(file_path)
+        df = pd.read_csv('eng_final.csv')
     except FileNotFoundError:
         st.error(f"'{file_path}' 파일을 찾을 수 없습니다. 파일이 앱과 같은 폴더에 있는지 확인해주세요.")
         st.stop()

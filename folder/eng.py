@@ -2,7 +2,7 @@
 
 import streamlit as st
 import pandas as pd
-from sklearn.naive_bayes import BernoulliNB
+from sklearn.svm import SVC # Changed from BernoulliNB to SVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import numpy as np
@@ -38,13 +38,15 @@ def train_all_models(df):
     # 'month'와 'number'를 모두 사용하는 경우
     X_full_encoded = pd.get_dummies(df[['month', 'number']].astype('category'), columns=['month', 'number'], prefix=['month', 'number'])
     y = df['answer']
-    full_model = BernoulliNB()
+    # Changed model to SVC with probability=True
+    full_model = SVC(probability=True, random_state=42)
     full_model.fit(X_full_encoded, y)
     
     # 'number'만 사용하는 경우
     X_num_encoded = pd.get_dummies(df[['number']].astype('category'), columns=['number'], prefix=['number'])
     y_num = df['answer']
-    comp_model = BernoulliNB()
+    # Changed model to SVC with probability=True
+    comp_model = SVC(probability=True, random_state=42)
     comp_model.fit(X_num_encoded, y_num)
     
     return {
@@ -99,7 +101,7 @@ def get_predictions_df(model_data, selected_month_str):
 
 # Streamlit 앱 시작
 st.title("수능 영어 정답 예측 모델 📝")
-st.write("최근 7년간 모의고사와 수능 정답 데이터를 나이브 베이지안 분류 방식으로 학습시킨 머신 러닝 모델입니다.")
+st.write("최근 7년간 모의고사와 수능 정답 데이터를 SVM 분류 방식으로 학습시킨 머신 러닝 모델입니다.") # Updated description
 st.markdown("---")
 
 # 데이터 로드
@@ -116,6 +118,7 @@ st.markdown("---")
 
 # 4. 사용자 입력 받기
 st.header("월별 정답 확률 예측")
+
 # 사용자가 선택할 수 있는 월 리스트를 '월'을 포함한 형태로 변경
 numeric_months = sorted([m for m in [3, 4, 6, 7, 9, 10, 11] if m != 11])
 formatted_months = [f'{m}월' for m in numeric_months]
